@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <title>Acceso al Sistema</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="stylesheet" href="styles.css">
+
+  <!-- FIREBASE COMPAT -->
+  <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-auth-compat.js"></script>
+</head>
+
+<body>
+
+<div class="login-container">
+  <h2>Iniciar Sesión</h2>
+
+  <input type="email" id="email" placeholder="Correo electrónico">
+  <input type="password" id="password" placeholder="Contraseña">
+
+  <button id="loginBtn">Ingresar</button>
+
+  <p id="loginError" class="error-text"></p>
+</div>
+
+<script>
+/* =============================
+   CONFIGURACIÓN FIREBASE
+============================= */
+const firebaseConfig = {
+  apiKey: "AIzaSyCxbsF_l6ST-JWOz7MdB9c8A77BNXMJtj8",
+  authDomain: "basedatoscheck.firebaseapp.com",
+  projectId: "basedatoscheck",
+  storageBucket: "basedatoscheck.firebasestorage.app",
+  messagingSenderId: "580954254341",
+  appId: "1:580954254341:web:98551fa27f07fa86d8006c",
+  measurementId: "G-NP9K7ZZBSJ"
+};
+
+firebase.initializeApp(firebaseConfig);
+const auth = firebase.auth();
+
+/* =============================
+   LOGIN
+============================= */
+document.getElementById("loginBtn").addEventListener("click", async () => {
+  const email = document.getElementById("email").value.trim();
+  const password = document.getElementById("password").value.trim();
+  const errorLabel = document.getElementById("loginError");
+
+  try {
+    await auth.signInWithEmailAndPassword(email, password);
+
+    localStorage.setItem("auth", "true");
+
+    window.location.href = "index.html";
+  } 
+  catch (e) {
+    errorLabel.textContent = "❌ Credenciales incorrectas";
+  }
+});
+</script>
+
+</body>
+</html>

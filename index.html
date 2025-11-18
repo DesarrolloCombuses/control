@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <title>Totalizador Vehículos (Protegido)</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  <link rel="stylesheet" href="styles.css">
+
+  <!-- FIREBASE COMPAT -->
+  <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-auth-compat.js"></script>
+
+  <!-- XLSX -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+</head>
+
+<body>
+
+<script>
+/* =============================
+   FIREBASE CONFIG + PROTECCIÓN
+============================= */
+const firebaseConfig = {
+  apiKey: "AIzaSyCxbsF_l6ST-JWOz7MdB9c8A77BNXMJtj8",
+  authDomain: "basedatoscheck.firebaseapp.com",
+  projectId: "basedatoscheck",
+  storageBucket: "basedatoscheck.firebasestorage.app",
+  messagingSenderId: "580954254341",
+  appId: "1:580954254341:web:98551fa27f07fa86d8006c",
+  measurementId: "G-NP9K7ZZBSJ"
+};
+
+firebase.initializeApp(firebaseConfig);
+const auth = firebase.auth();
+
+// Si no está logueado redirige al login
+auth.onAuthStateChanged(user => {
+  if (!user) window.location.href = "login.html";
+});
+</script>
+
+<div class="card">
+
+  <div class="card-header">
+    <h2>Totalizador por Vehículo (Ruta 700 + Base Interna)</h2>
+
+    <div class="date-display" id="fechaDisplay">Seleccione una fecha</div>
+
+    <button id="logoutBtn" class="logout-btn">Cerrar sesión</button>
+  </div>
+
+  <!-- ===================== FORMULARIO ===================== -->
+  <div class="form-grid">
+
+    <div class="input-group">
+      <label for="fechaReporte">Fecha del reporte:</label>
+      <input type="date" id="fechaReporte">
+    </div>
+
+    <div class="input-group">
+      <label for="fileDetalle">Archivo detalle (viajes):</label>
+      <input type="file" id="fileDetalle" accept=".xlsx,.xls">
+      <div class="file-status" id="statusDetalle"></div>
+    </div>
+
+    <div class="input-group">
+      <label for="fileMetro">Archivo Pasajeros Metro:</label>
+      <input type="file" id="fileMetro" accept=".xlsx,.xls">
+      <div class="file-status" id="statusMetro"></div>
+    </div>
+
+  </div>
+
+  <div class="button-group">
+    <button id="btnProcesar">Procesar reporte</button>
+    <button id="btnExportar" disabled>Descargar Excel</button>
+  </div>
+
+  <div class="loading" id="loading">
+    <div class="spinner"></div>
+    <p>Procesando datos, por favor espere...</p>
+  </div>
+
+  <!-- ===================== PESTAÑAS ===================== -->
+  <div id="tabsContainer" style="display:none;">
+    <div class="tabs">
+      <button class="tab active" data-tab="ruta700">Ruta 700</button>
+      <button class="tab" data-tab="especiales">Especiales</button>
+      <button class="tab" data-tab="todos">Todos los Vehículos</button>
+    </div>
+
+    <!-- TAB 1 -->
+    <div class="tab-content active" id="tab-ruta700">
+      <div class="table-container">
+        <div class="table-scroll">
+          <div id="tablaRuta700"></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- TAB 2 -->
+    <div class="tab-content" id="tab-especiales">
+      <div class="table-container">
+        <div class="table-scroll">
+          <div id="tablaEspeciales"></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- TAB 3 -->
+    <div class="tab-content" id="tab-todos">
+      <div class="table-container">
+        <div class="table-scroll">
+          <div id="tablaTodos"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<script src="app.js"></script>
+
+<script>
+// =============================
+// LOGOUT
+// =============================
+document.getElementById("logoutBtn").addEventListener("click", () => {
+  firebase.auth().signOut();
+  localStorage.removeItem("auth");
+  window.location.href = "login.html";
+});
+</script>
+
+</body>
+</html>
